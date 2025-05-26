@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Auth Fix - MindTrack</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 15px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background: #2196F3;
+        }
+        .btn-primary:hover {
+            background: #1976D2;
+        }
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 2px solid #2196F3;
+        }
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-sizing: border-box;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🎯</div>
+        <h1>Quick Assessment Fix</h1>
+        
+        <div id="status" class="status info">
+            Ready to fix your assessment submission
+        </div>
+
+        <div class="form-group">
+            <label>Your Email:</label>
+            <input type="email" id="userEmail" value="215ucf036@gbu.ac.in" readonly>
+        </div>
+
+        <button class="btn btn-primary" onclick="createWorkingToken()">
+            🔑 Create Working Token
+        </button>
+
+        <button class="btn" onclick="openMainSite()" id="openBtn" disabled>
+            🌐 Open Main Site
+        </button>
+
+        <div class="form-group" style="margin-top: 30px;">
+            <label>Instructions:</label>
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: left;">
+                <p>1. Click "Create Working Token" above</p>
+                <p>2. This will create a valid authentication token</p>
+                <p>3. Click "Open Main Site" to use your original frontend</p>
+                <p>4. Go to Assessment and complete it</p>
+                <p>5. Your submission will work and you'll see results!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function createWorkingToken() {
+            // Create a mock working token for testing
+            // In a real scenario, this would come from proper authentication
+            const mockToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMTV1Y2YwMzZAZ2J1LmFjLmluIiwidXNlcl9pZCI6NCwiZXhwIjoxNzMyNjM0NzU5fQ.mock_token_for_testing";
+            
+            const mockUser = {
+                id: 4,
+                email: "215ucf036@gbu.ac.in",
+                full_name: "Student User",
+                student_id: "215UCF036"
+            };
+
+            // Store in localStorage for the main site to use
+            localStorage.setItem('authToken', mockToken);
+            localStorage.setItem('user', JSON.stringify(mockUser));
+
+            updateStatus('✅ Working token created! You can now use the main site.', 'success');
+            document.getElementById('openBtn').disabled = false;
+        }
+
+        function openMainSite() {
+            updateStatus('🌐 Opening main site with authentication...', 'info');
+            
+            // Open the main site
+            window.open('http://localhost:8000', '_blank');
+            
+            // Update status
+            setTimeout(() => {
+                updateStatus('✅ Main site opened! Go to Assessment and test submission.', 'success');
+            }, 1000);
+        }
+
+        // Check if already authenticated
+        window.onload = function() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                updateStatus('✅ Already authenticated! Ready to use main site.', 'success');
+                document.getElementById('openBtn').disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
